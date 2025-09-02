@@ -16,6 +16,9 @@ export { default as ProductCard } from './ProductCard'
 export { default as ServiceCard } from './ServiceCard'
 export { default as TestimonialCard } from './TestimonialCard'
 
+// 样式导出
+export * from './styles'
+
 // Home页面组件 (从新的模块化结构导出)
 export * from '../Home'
 

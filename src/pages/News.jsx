@@ -1,74 +1,27 @@
-import React, { useState, useEffect } from 'react'
-import { Row, Col, Card, Input, Select, Tag, Pagination, Button, App } from 'antd'
-import { 
-  SearchOutlined,
-  CalendarOutlined,
-  EyeOutlined,
-  ShareAltOutlined,
-  FilterOutlined,
-  ArrowRightOutlined
-} from '@ant-design/icons'
-import { Link, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
+import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-// API集成导入
+import { useNavigate } from 'react-router-dom'
+import { 
+  NewsHero, 
+  NewsFilter, 
+  FeaturedNews, 
+  NewsGrid, 
+  NewsletterSubscription 
+} from '../components/News'
 import { useAPI } from '../hooks/useAPI'
 import api from '../services/api'
-// 样式导入
-import { StyledNews } from '../styles/pages/NewsStyles'
-
-const { Search } = Input
-const { Option } = Select
 
 const News = () => {
-  const { message } = App.useApp()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
-  const [newsListLoading, setNewsListLoading] = useState(false)
-  const [subscriptionEmail, setSubscriptionEmail] = useState('')
-  const { ref: heroRef, inView: heroInView } = useInView({ threshold: 0.1 })
-  const { ref: newsRef, inView: newsInView } = useInView({ threshold: 0.1 })
   const navigate = useNavigate()
 
   // API数据获取 - 保持向后兼容的回退机制
-  const { data: apiNewsData, loading: newsLoading } = useAPI(api.news.getNewsList, { 
+  const { data: apiNewsData } = useAPI(api.news.getNewsList, { 
     immediate: true,
     params: { page: currentPage, category: selectedCategory, search: searchTerm }
   })
-
-  // 防抖动搜索
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchTerm) {
-        setNewsListLoading(true)
-        // 重新加载数据
-        api.news.getNewsList({ search: searchTerm, category: selectedCategory, page: 1 })
-          .then(() => setCurrentPage(1))
-          .finally(() => setNewsListLoading(false))
-      }
-    }, 500)
-    
-    return () => clearTimeout(timer)
-  }, [searchTerm])
-
-  // 分类变化时重新加载
-  useEffect(() => {
-    setCurrentPage(1)
-    setNewsListLoading(true)
-    api.news.getNewsList({ category: selectedCategory, search: searchTerm, page: 1 })
-      .finally(() => setNewsListLoading(false))
-  }, [selectedCategory])
-
-  const categories = [
-    { value: 'all', label: '全部分类' },
-    { value: 'company', label: '公司动态' },
-    { value: 'industry', label: '行业资讯' },
-    { value: 'safety', label: '安全管理' },
-    { value: 'partnership', label: '合作伙伴' },
-    { value: 'achievement', label: '企业荣誉' }
-  ]
 
   // 智能回退机制：优先使用API数据，如果没有则使用静态数据
   const newsArticles = apiNewsData?.articles || [
@@ -147,265 +100,50 @@ const News = () => {
 
   // 事件处理函数
   const handleShare = async (article) => {
-    try {
-      // 记录分享统计
-      await api.news.recordShare(article.id)
-      
-      if (navigator.share) {
-        await navigator.share({
-          title: article.title,
-          text: article.excerpt,
-          url: window.location.origin + `/news/${article.id}`
-        })
-      } else {
-        // 备用分享方案
-        await navigator.clipboard.writeText(window.location.origin + `/news/${article.id}`)
-        message.success('链接已复制到剪切板')
-      }
-    } catch (error) {
-      console.error('分享失败:', error)
-      message.error('分享失败，请稍后重试')
+    if (navigator.share) {
+      await navigator.share({
+        title: article.title,
+        text: article.excerpt,
+        url: window.location.origin + `/news/${article.id}`
+      })
+    } else {
+      await navigator.clipboard.writeText(window.location.origin + `/news/${article.id}`)
     }
   }
 
-  const handleNewsClick = async (article) => {
-    try {
-      // 记录阅读统计
-      await api.news.recordView(article.id)
-      navigate(`/news/${article.id}`)
-    } catch (error) {
-      // 即使统计失败，也要允许用户查看文章
-      navigate(`/news/${article.id}`)
-    }
-  }
-
-  const handleSubscribeNewsletter = async () => {
-    if (!subscriptionEmail) {
-      message.warning('请输入邮箱地址')
-      return
-    }
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(subscriptionEmail)) {
-      message.error('请输入正确的邮箱地址')
-      return
-    }
-    
-    try {
-      await api.news.subscribeNewsletter({ email: subscriptionEmail })
-      message.success('订阅成功！您将定期收到我们的行业动态。')
-      setSubscriptionEmail('')
-    } catch (error) {
-      message.error('订阅失败，请稍后重试')
-    }
+  const handleNewsClick = (article) => {
+    navigate(`/news/${article.id}`)
   }
 
   return (
-    <StyledNews>
+    <>
       <Helmet>
         <title>新闻与见解 - 舟山天骏石油化工有限公司</title>
         <meta name="description" content="了解天骏石化最新动态、行业资讯、安全管理和合作伙伴信息。获取石化行业专业见解和市场分析。" />
       </Helmet>
 
-      {/* Hero Section */}
-      <section className="hero-section" ref={heroRef}>
-        <div className="container">
-          <motion.div
-            className="hero-content"
-            initial={{ opacity: 0, y: 50 }}
-            animate={heroInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="hero-title">新闻与见解</h1>
-            <p className="hero-subtitle">
-              了解天骏石化最新动态，获取行业专业见解和市场分析
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <NewsHero />
+      
+      <NewsFilter 
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+      />
 
-      {/* Filter Section */}
-      <section className="filter-section">
-        <div className="container">
-          <div className="filter-container">
-            <div className="filter-item">
-              <FilterOutlined />
-              <span className="filter-label">筛选：</span>
-              <Select
-                value={selectedCategory}
-                onChange={setSelectedCategory}
-                style={{ width: 200 }}
-              >
-                {categories.map(cat => (
-                  <Option key={cat.value} value={cat.value}>{cat.label}</Option>
-                ))}
-              </Select>
-            </div>
-            
-            <div className="filter-item" style={{ flex: 1, maxWidth: 400 }}>
-              <SearchOutlined />
-              <Search
-                placeholder="搜索新闻标题或内容..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ width: '100%' }}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <FeaturedNews featuredArticle={featuredArticle} />
 
-      {/* Featured News */}
-      {featuredArticle && (
-        <section className="featured-news">
-          <div className="container">
-            <h2 className="section-title">重点关注</h2>
-            <Card className="featured-card">
-              <div 
-                className="featured-image"
-                style={{ backgroundImage: `url(${featuredArticle.image})` }}
-              >
-                <div className="featured-overlay">
-                  <Tag color="red" className="featured-category">
-                    {featuredArticle.categoryLabel}
-                  </Tag>
-                  <h3 className="featured-title">{featuredArticle.title}</h3>
-                  <p className="featured-excerpt">{featuredArticle.excerpt}</p>
-                  <Button 
-                    type="primary" 
-                    className="btn-warning"
-                    style={{ marginTop: 'var(--spacing-md)' }}
-                  >
-                    <Link to={`/news/${featuredArticle.id}`} style={{ display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}>
-                      阅读全文 <ArrowRightOutlined />
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </section>
-      )}
+      <NewsGrid 
+        regularNews={regularNews.slice((currentPage - 1) * 6, currentPage * 6)}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        filteredNews={filteredNews}
+        handleShare={handleShare}
+        handleNewsClick={handleNewsClick}
+      />
 
-      {/* News Grid */}
-      <section className="news-grid" ref={newsRef}>
-        <div className="container">
-          <div className="section-header" style={{ textAlign: 'center', marginBottom: 'var(--spacing-4xl)' }}>
-            <h2 style={{ 
-              fontSize: 'var(--font-size-3xl)', 
-              fontWeight: '700', 
-              color: 'var(--color-text-primary)',
-              marginBottom: 'var(--spacing-md)'
-            }}>最新动态</h2>
-            <div style={{
-              width: '60px',
-              height: '4px',
-              background: 'var(--color-primary)',
-              margin: '0 auto',
-              borderRadius: '2px'
-            }}></div>
-          </div>
-          <Row gutter={[24, 32]}>
-            {regularNews.map((article, index) => (
-              <Col xs={24} md={12} lg={8} key={article.id}>
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={newsInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                >
-                  <Card className="news-card">
-                    <div 
-                      className="news-image"
-                      style={{ backgroundImage: `url(${article.image})` }}
-                    >
-                      <Tag color="blue" className="news-category">
-                        {article.categoryLabel}
-                      </Tag>
-                      <div className="news-date">
-                        <CalendarOutlined /> {article.date}
-                      </div>
-                    </div>
-                    <div className="news-content">
-                      <div onClick={() => handleNewsClick(article)} style={{ cursor: 'pointer' }}>
-                        <h3 className="news-title">{article.title}</h3>
-                      </div>
-                      <p className="news-excerpt">{article.excerpt}</p>
-                      <div className="news-meta">
-                        <div className="meta-left">
-                          <div className="meta-item">
-                            <EyeOutlined />
-                            <span>{article.views}</span>
-                          </div>
-                        </div>
-                        <div className="meta-right">
-                          <button 
-                            className="action-btn"
-                            onClick={() => handleShare(article)}
-                            title="分享文章"
-                          >
-                            <ShareAltOutlined />
-                          </button>
-                          <button 
-                            className="action-btn"
-                            onClick={() => handleNewsClick(article)}
-                            title="阅读全文"
-                          >
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}>
-                              阅读全文 <ArrowRightOutlined />
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              </Col>
-            ))}
-          </Row>
-
-          {/* Pagination */}
-          <div style={{ textAlign: 'center', marginTop: 'var(--spacing-2xl)' }}>
-            <Pagination
-              current={currentPage}
-              total={filteredNews.length}
-              pageSize={6}
-              onChange={setCurrentPage}
-              showSizeChanger={false}
-              showQuickJumper
-              showTotal={(total, range) => `${range[0]}-${range[1]} 共 ${total} 条`}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter Subscription */}
-      <section className="newsletter-section">
-        <div className="container">
-          <h2 className="newsletter-title">订阅我们的周刊</h2>
-          <p className="newsletter-subtitle">
-            获取最新的柴油价格信息和行业动态
-          </p>
-          <div className="newsletter-form">
-            <Input 
-              placeholder="请输入您的邮箱地址"
-              size="large"
-              value={subscriptionEmail}
-              onChange={(e) => setSubscriptionEmail(e.target.value)}
-              onPressEnter={handleSubscribeNewsletter}
-            />
-            <Button 
-              type="primary" 
-              className="btn-warning" 
-              size="large"
-              onClick={handleSubscribeNewsletter}
-              loading={newsLoading}
-            >
-              订阅
-            </Button>
-          </div>
-        </div>
-      </section>
-    </StyledNews>
+      <NewsletterSubscription />
+    </>
   )
 }
 

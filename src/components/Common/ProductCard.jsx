@@ -2,94 +2,12 @@
  * 产品卡片组件 - 展示单个产品信息
  */
 import React from 'react'
-import { Card, Button, Tag, Statistic, Space } from 'antd'
+import { Button, Tag, Statistic, Space } from 'antd'
 import { Link } from 'react-router-dom'
 import { TruckOutlined, SafetyOutlined, RocketOutlined } from '@ant-design/icons'
-import styled from 'styled-components'
+import { StyledProductCard } from './styles'
 
-const StyledProductCard = styled(Card)`
-  height: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  }
-  
-  .product-cover {
-    position: relative;
-    height: 200px;
-    overflow: hidden;
-    border-radius: 8px 8px 0 0;
-    
-    .cover-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-    
-    &:hover .cover-image {
-      transform: scale(1.05);
-    }
-    
-    .service-tag {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      z-index: 2;
-    }
-  }
-  
-  .product-content {
-    .product-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #1f2937;
-    }
-    
-    .product-description {
-      color: #6b7280;
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 16px;
-      min-height: 60px;
-    }
-    
-    .product-features {
-      margin-bottom: 16px;
-      
-      .feature-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 8px;
-        font-size: 13px;
-        color: #4b5563;
-        
-        .anticon {
-          margin-right: 8px;
-          color: #004c97;
-        }
-      }
-    }
-    
-    .product-stats {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      
-      .ant-statistic {
-        .ant-statistic-content {
-          font-size: 16px !important;
-          color: #004c97 !important;
-        }
-      }
-    }
-  }
-`
+
 
 const ProductCard = ({ product, className }) => {
   const {

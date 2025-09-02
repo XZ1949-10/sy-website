@@ -412,6 +412,61 @@ p {
   transition: all var(--transition-normal);
 }
 
+/* 主要按钮样式优化 */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 76, 151, 0.3);
+  transition: all var(--transition-normal);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 76, 151, 0.4);
+  color: white;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+  border: none;
+  color: var(--color-graphite);
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 12px rgba(255, 209, 0, 0.3);
+  transition: all var(--transition-normal);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, var(--color-secondary-dark) 0%, var(--color-secondary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 209, 0, 0.4);
+  color: var(--color-graphite);
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, var(--color-warning) 0%, #e97e0b 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  transition: all var(--transition-normal);
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #e97e0b 0%, var(--color-warning) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+  color: white;
+}
+
 /* 优化按钮内图标和文字居中对齐 */
 .ant-btn {
   display: flex;
@@ -657,6 +712,50 @@ p {
 .ant-card {
   border-radius: var(--border-radius-xl);
   box-shadow: var(--shadow-base);
+  transition: all var(--transition-normal);
+  border: 1px solid var(--color-light-gray);
+  overflow: hidden;
+}
+
+.ant-card:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-4px);
+  border-color: var(--color-primary-light);
+}
+
+/* 服务卡片特殊样式 */
+.service-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(0, 76, 151, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-card:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+  border-color: var(--color-primary);
+  box-shadow: 0 20px 40px rgba(0, 76, 151, 0.15);
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* 新闻卡片特殊样式 */
+.news-card {
+  background: white;
+  border: 1px solid var(--color-light-gray);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.news-card:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+}
+
+.news-card .ant-card-cover img {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.news-card:hover .ant-card-cover img {
+  transform: scale(1.05);
 }
 
 .ant-input {

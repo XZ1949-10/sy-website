@@ -1,39 +1,30 @@
 import React, { useState } from 'react'
-import { Row, Col, Card, Button, Modal, Form, Input, Select, Upload, message, Tag } from 'antd'
+import { Form, message } from 'antd'
 import { 
-  EnvironmentOutlined,
-  ClockCircleOutlined,
-  TeamOutlined,
-  DollarOutlined,
-  SendOutlined,
-  UploadOutlined,
   HeartOutlined,
   TrophyOutlined,
   SafetyOutlined,
   BookOutlined,
-  CoffeeOutlined,
-  PlayCircleOutlined
+  CoffeeOutlined
 } from '@ant-design/icons'
-import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
 import { Helmet } from 'react-helmet-async'
+// 模块化组件导入
+import {
+  CareersHero,
+  CultureVideo,
+  PositionsSection,
+  BenefitsSection,
+  ApplicationModal,
+  CultureVideoModal
+} from '../components/Careers'
 // 样式导入
 import { StyledCareers } from '../styles/pages/CareersStyles'
-
-const { TextArea } = Input
-const { Option } = Select
 
 const Careers = () => {
   const [applicationVisible, setApplicationVisible] = useState(false)
   const [selectedPosition, setSelectedPosition] = useState(null)
   const [videoVisible, setVideoVisible] = useState(false)
   const [form] = Form.useForm()
-  
-  const { ref: heroRef, inView: heroInView } = useInView({ threshold: 0.1 })
-  const { ref: videoRef, inView: videoInView } = useInView({ threshold: 0.1 })
-  const { ref: positionsRef, inView: positionsInView } = useInView({ threshold: 0.1 })
-  const { ref: benefitsRef, inView: benefitsInView } = useInView({ threshold: 0.1 })
-  const { ref: cultureRef, inView: cultureInView } = useInView({ threshold: 0.1 })
 
   const positions = [
     {
@@ -226,16 +217,13 @@ const Careers = () => {
     setApplicationVisible(true)
   }
 
-  const handleApplicationSubmit = async (values) => {
-    try {
-      // 模拟提交申请
-      await new Promise(resolve => setTimeout(resolve, 1000))
+  const handleApplicationSubmit = (values) => {
+    // 模拟提交申请
+    setTimeout(() => {
       message.success('申请已提交，我们会在3个工作日内联系您！')
       setApplicationVisible(false)
       form.resetFields()
-    } catch (error) {
-      message.error('提交失败，请稍后重试')
-    }
+    }, 1000)
   }
 
   const handleVideoPlay = () => {
@@ -250,275 +238,31 @@ const Careers = () => {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="hero-section" ref={heroRef}>
-        <div className="container">
-          <motion.div
-            className="hero-content"
-            initial={{ opacity: 0, y: 50 }}
-            animate={heroInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="hero-title">加入我们</h1>
-            <p className="hero-subtitle">
-              在第三代家族企业中开启您的职业新篇章<br />
-              我们寻找有激情、有专业能力的人才加入天骏石化大家庭
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <CareersHero />
 
       {/* Company Culture Video */}
-      <section className="culture-video" ref={videoRef}>
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={videoInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 style={{ 
-              textAlign: 'center', 
-              marginBottom: '3rem', 
-              fontSize: '2.5rem', 
-              fontWeight: '700',
-              color: 'var(--color-text-primary)'
-            }}>
-              企业文化
-            </h2>
-            <div className="video-placeholder" onClick={handleVideoPlay}>
-              <PlayCircleOutlined className="play-icon" />
-              <div className="video-title">了解天骏石化企业文化</div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <CultureVideo handleVideoPlay={handleVideoPlay} />
 
       {/* Job Positions */}
-      <section className="positions-section" ref={positionsRef}>
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={positionsInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 style={{ 
-              textAlign: 'center', 
-              marginBottom: '3rem', 
-              fontSize: '2.5rem', 
-              fontWeight: '700',
-              color: 'var(--color-text-primary)'
-            }}>
-              招聘职位
-            </h2>
-            <Row gutter={[24, 24]}>
-              {positions.map((position, index) => (
-                <Col xs={24} md={12} xl={8} key={position.id}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={positionsInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                  >
-                    <Card className="position-card">
-                      <div className="position-header">
-                        <h3 className="position-title">{position.title}</h3>
-                        <div className="position-department">{position.department}</div>
-                        <div className="position-tags">
-                          {position.tags.map((tag, tagIndex) => (
-                            <Tag key={tagIndex} color="blue">{tag}</Tag>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      <div className="position-details">
-                        <div className="detail-item">
-                          <EnvironmentOutlined />
-                          <span>{position.location}</span>
-                        </div>
-                        <div className="detail-item">
-                          <ClockCircleOutlined />
-                          <span>{position.type} • {position.experience}</span>
-                        </div>
-                        <div className="detail-item">
-                          <DollarOutlined />
-                          <span>{position.salary}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="position-requirements">
-                        <div className="requirements-title">岗位要求</div>
-                        <ul className="requirements-list">
-                          {position.requirements.slice(0, 3).map((req, reqIndex) => (
-                            <li key={reqIndex}>{req}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      
-                      <Button 
-                        type="primary" 
-                        className="apply-btn"
-                        onClick={() => handleApply(position)}
-                      >
-                        立即申请
-                      </Button>
-                    </Card>
-                  </motion.div>
-                </Col>
-              ))}
-            </Row>
-          </motion.div>
-        </div>
-      </section>
+      <PositionsSection positions={positions} handleApply={handleApply} />
 
       {/* Employee Benefits */}
-      <section className="benefits-section" ref={benefitsRef}>
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={benefitsInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 style={{ 
-              textAlign: 'center', 
-              marginBottom: '3rem', 
-              fontSize: '2.5rem', 
-              fontWeight: '700',
-              color: 'var(--color-text-primary)'
-            }}>
-              员工福利
-            </h2>
-            <Row gutter={[32, 32]}>
-              {benefits.map((benefit, index) => (
-                <Col xs={24} sm={12} lg={8} key={index}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={benefitsInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                  >
-                    <Card className="benefit-card">
-                      <div className="benefit-icon">{benefit.icon}</div>
-                      <h3 className="benefit-title">{benefit.title}</h3>
-                      <p className="benefit-desc">{benefit.desc}</p>
-                    </Card>
-                  </motion.div>
-                </Col>
-              ))}
-            </Row>
-          </motion.div>
-        </div>
-      </section>
+      <BenefitsSection benefits={benefits} />
 
       {/* Application Modal */}
-      <Modal
-        title={`申请职位：${selectedPosition?.title || ''}`}
-        open={applicationVisible}
-        onCancel={() => setApplicationVisible(false)}
-        footer={null}
-        width={600}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleApplicationSubmit}
-        >
-          <Form.Item
-            name="name"
-            label="姓名"
-            rules={[{ required: true, message: '请输入姓名' }]}
-          >
-            <Input placeholder="请输入您的姓名" />
-          </Form.Item>
-          
-          <Form.Item
-            name="phone"
-            label="联系电话"
-            rules={[
-              { required: true, message: '请输入联系电话' },
-              { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }
-            ]}
-          >
-            <Input placeholder="请输入联系电话" />
-          </Form.Item>
-          
-          <Form.Item
-            name="email"
-            label="邮箱地址"
-            rules={[
-              { required: true, message: '请输入邮箱地址' },
-              { type: 'email', message: '请输入正确的邮箱地址' }
-            ]}
-          >
-            <Input placeholder="请输入邮箱地址" />
-          </Form.Item>
-          
-          <Form.Item
-            name="education"
-            label="学历"
-            rules={[{ required: true, message: '请选择学历' }]}
-          >
-            <Select placeholder="请选择学历">
-              <Option value="高中">高中</Option>
-              <Option value="大专">大专</Option>
-              <Option value="本科">本科</Option>
-              <Option value="硕士">硕士</Option>
-              <Option value="博士">博士</Option>
-            </Select>
-          </Form.Item>
-          
-          <Form.Item
-            name="experience"
-            label="工作经验"
-            rules={[{ required: true, message: '请输入工作经验' }]}
-          >
-            <TextArea rows={3} placeholder="请简述您的相关工作经验" />
-          </Form.Item>
-          
-          <Form.Item
-            name="resume"
-            label="简历附件"
-            rules={[{ required: true, message: '请上传简历' }]}
-          >
-            <Upload
-              beforeUpload={() => false}
-              accept=".pdf,.doc,.docx"
-              maxCount={1}
-            >
-              <Button icon={<UploadOutlined />}>上传简历</Button>
-            </Upload>
-          </Form.Item>
-          
-          <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
-            <Button style={{ marginRight: 8 }} onClick={() => setApplicationVisible(false)}>
-              取消
-            </Button>
-            <Button type="primary" htmlType="submit" icon={<SendOutlined />}>
-              提交申请
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+      <ApplicationModal 
+        applicationVisible={applicationVisible}
+        setApplicationVisible={setApplicationVisible}
+        selectedPosition={selectedPosition}
+        form={form}
+        handleApplicationSubmit={handleApplicationSubmit}
+      />
 
       {/* Culture Video Modal */}
-      <Modal
-        title="企业文化视频"
-        open={videoVisible}
-        onCancel={() => setVideoVisible(false)}
-        footer={null}
-        width={800}
-      >
-        <div style={{ 
-          height: '450px', 
-          background: '#f0f0f0', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          borderRadius: '8px'
-        }}>
-          <div style={{ textAlign: 'center', color: '#999' }}>
-            <PlayCircleOutlined style={{ fontSize: '4rem', marginBottom: '1rem' }} />
-            <div>企业文化宣传视频</div>
-            <div style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>展示天骏石化的企业价值观和团队文化</div>
-          </div>
-        </div>
-      </Modal>
+        <CultureVideoModal 
+          videoVisible={videoVisible}
+          setVideoVisible={setVideoVisible}
+        />
     </StyledCareers>
   )
 }

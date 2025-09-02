@@ -2,133 +2,15 @@
  * 新闻卡片组件 - 展示单条新闻信息
  */
 import React from 'react'
-import { Card, Tag, Statistic, Space } from 'antd'
+import { Tag, Statistic, Space } from 'antd'
 import { Link } from 'react-router-dom'
 import { CalendarOutlined, EyeOutlined, TrophyOutlined } from '@ant-design/icons'
-import styled from 'styled-components'
+import { StyledNewsCard } from './styles'
 import dayjs from 'dayjs'
 
-const StyledNewsCard = styled(Card)`
-  height: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  }
-  
-  .news-cover {
-    position: relative;
-    height: 200px;
-    overflow: hidden;
-    border-radius: 8px 8px 0 0;
-    
-    .news-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-    
-    &:hover .news-image {
-      transform: scale(1.05);
-    }
-    
-    .news-tag {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      z-index: 2;
-    }
-    
-    .news-overlay {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      z-index: 2;
-    }
-  }
-  
-  .news-content {
-    .news-header {
-      margin-bottom: 12px;
-      
-      .news-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: #1f2937;
-        line-height: 1.4;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        transition: color 0.2s ease;
-        
-        &:hover {
-          color: #004c97;
-        }
-      }
-    }
-    
-    .news-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      font-size: 13px;
-      color: #6b7280;
-      
-      .anticon {
-        margin-right: 4px;
-      }
-      
-      .news-stats {
-        .ant-statistic {
-          .ant-statistic-content {
-            font-size: 12px !important;
-            color: #6b7280 !important;
-          }
-          
-          .ant-statistic-content-value {
-            font-size: 12px !important;
-          }
-        }
-      }
-    }
-    
-    .news-excerpt {
-      color: #4b5563;
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 16px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  }
-  
-  .ant-card-actions {
-    border-top: 1px solid #f0f0f0;
-    background: #fafafa;
-    
-    > li {
-      margin: 4px 0;
-      
-      span {
-        font-size: 13px;
-        color: #6b7280;
-        transition: color 0.2s ease;
-        
-        &:hover {
-          color: #004c97;
-        }
-      }
-    }
-  }
-`
+
+
+
 
 const NewsCard = ({ news, className }) => {
   const {

@@ -18,3 +18,6 @@ export {
   OrderTrackingModal, 
   PriceDetailModal 
 } from './HomeModals'
+
+// 样式
+export * from './styles'

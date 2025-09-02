@@ -4,60 +4,8 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import styled from 'styled-components'
 import EChartsNetworkMap from '../Common/EChartsNetworkMap'
-
-const StyledMapSection = styled.section`
-  .map-section {
-    background: var(--color-bg-secondary);
-    padding: var(--spacing-5xl) 0;
-    
-    .map-container {
-      background: white;
-      border-radius: var(--border-radius-2xl);
-      padding: var(--spacing-2xl);
-      box-shadow: var(--shadow-lg);
-      text-align: center;
-      
-      .map-placeholder {
-        height: 400px;
-        background: linear-gradient(135deg, var(--color-cloud-gray) 0%, var(--color-light-gray) 100%);
-        border-radius: var(--border-radius-xl);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--color-text-secondary);
-        font-size: var(--font-size-lg);
-        margin-bottom: var(--spacing-lg);
-      }
-      
-      .depot-info {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: var(--spacing-lg);
-        margin-top: var(--spacing-lg);
-        
-        .depot-item {
-          text-align: left;
-          padding: var(--spacing-md);
-          background: var(--color-bg-secondary);
-          border-radius: var(--border-radius-md);
-          
-          .depot-name {
-            font-weight: 600;
-            color: var(--color-primary);
-            margin-bottom: var(--spacing-xs);
-          }
-          
-          .depot-address {
-            font-size: var(--font-size-sm);
-            color: var(--color-text-secondary);
-          }
-        }
-      }
-    }
-  }
-`
+import { StyledMapSection } from './styles'
 
 const MapSection = () => {
   const { ref, inView } = useInView({ threshold: 0.1 })

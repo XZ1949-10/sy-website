@@ -11,6 +11,17 @@ export const StyledProducts = styled.div`
     color: white;
     position: relative;
     
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0, 76, 151, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
+      z-index: 1;
+    }
+    
     .hero-content {
       z-index: 2;
       text-align: center;

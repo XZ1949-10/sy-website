@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CertificationsCard, PartnersCard, ServiceStatsCard } from './';
-import './TrustBar.css';
+import { StyledTrustBar } from './styles';
 
 const TrustBar = ({ data }) => {
   return (
-    <section className="trust-bar">
+    <StyledTrustBar>
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -34,7 +34,7 @@ const TrustBar = ({ data }) => {
           </div>
         </div>
       </div>
-    </section>
+    </StyledTrustBar>
   );
 };
 
